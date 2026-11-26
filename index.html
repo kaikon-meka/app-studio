@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>誰でもアプリ体験スタジオ</title>
+
+  <!-- なんちゃってPWA（1ファイル完結・安全なホーム画面アイコン＆テーマカラー設定） -->
+  <meta name="theme-color" content="#f6f8fb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="アプリ体験" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2310b981'/><text x='50' y='68' font-size='56' text-anchor='middle'>🚀</text></svg>" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2310b981'/><text x='50' y='68' font-size='56' text-anchor='middle'>🚀</text></svg>" />
+
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --accent: #10b981;
+      --accent-dark: #059669;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Hiragino Maru Gothic ProN", "Rounded Mplus 1c", "Yu Gothic", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      padding: 18px 14px 64px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 16px 8px 22px;
+    }
+
+    h1 {
+      font-size: clamp(20px, 5.6vw, 24px);
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    .step-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 420px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tpl-btn {
+      appearance: none;
+      border: 2px solid var(--border);
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 14px 12px;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #e2e8f0;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .tpl-btn[data-tpl="memo"]:hover {
+      border-color: #38bdf8;
+      background: #f0f9ff;
+    }
+
+    .tpl-btn[data-tpl="meal"]:hover {
+      border-color: #fb923c;
+      background: #fff7ed;
+    }
+
+    .tpl-btn[data-tpl="countdown"]:hover {
+      border-color: #818cf8;
+      background: #eef2ff;
+    }
+
+    .tpl-btn[data-tpl="diary"]:hover {
+      border-color: #34d399;
+      background: #ecfdf5;
+    }
+
+    .tpl-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #cbd5e1;
+    }
+
+    .tpl-btn.selected {
+      border-color: #10b981;
+      background: #ecfdf5;
+      box-shadow: 0 3px 0 #a7f3d0;
+    }
+
+    .tpl-btn.selected .tpl-name {
+      color: #065f46;
+    }
+
+    .tpl-btn.selected .tpl-sub {
+      color: #047857;
+      font-weight: 700;
+    }
+
+    .tpl-name {
+      font-size: 16px;
+      font-weight: 800;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .tpl-sub {
+      font-size: 12px;
+      color: var(--muted);
+      display: block;
+    }
+
+    .copied-msg {
+      display: none;
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #065f46;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+
+    .copied-msg.show {
+      display: block;
+    }
+
+    .guide {
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      margin-bottom: 10px;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .run-btn {
+      flex: 1;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #047857;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
+    }
+
+    .run-btn:hover {
+      background: var(--accent-dark);
+    }
+
+    .run-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #047857;
+    }
+
+    .clear-btn {
+      background: #e2e8f0;
+      color: #475569;
+      border: none;
+      border-radius: 14px;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #cbd5e1;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .clear-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #cbd5e1;
+    }
+
+    .preview-wrap {
+      display: none;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .preview-wrap.show {
+      display: block;
+    }
+
+    iframe {
+      width: 100%;
+      height: 440px;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>誰でもアプリ体験スタジオ</h1>
+      <p class="subtitle">選んで、AIに貼って、ここで動かすだけ。</p>
+    </header>
+
+    <section class="card">
+      <div class="step-title">① 作りたいものを選ぶ（タップでコピー）</div>
+      <div class="grid">
+        <button class="tpl-btn" data-tpl="memo" data-title="📝 買い物メモ" data-sub="追加してタップで完了" onclick="pick('memo', this)">
+          <span class="tpl-name">📝 買い物メモ</span>
+          <span class="tpl-sub">追加してタップで完了</span>
+        </button>
+        <button class="tpl-btn" data-tpl="meal" data-title="🍽️ 食事ルーレット" data-sub="ランチ＆ディナーを選んで決定" onclick="pick('meal', this)">
+          <span class="tpl-name">🍽️ 食事ルーレット</span>
+          <span class="tpl-sub">ランチ＆ディナーを選んで決定</span>
+        </button>
+        <button class="tpl-btn" data-tpl="countdown" data-title="📅 カウントダウン" data-sub="楽しみな日まであと何日？" onclick="pick('countdown', this)">
+          <span class="tpl-name">📅 カウントダウン</span>
+          <span class="tpl-sub">楽しみな日まであと何日？</span>
+        </button>
+        <button class="tpl-btn" data-tpl="diary" data-title="📖 かんたん日記帳" data-sub="書いて残す、自分流に育てる" onclick="pick('diary', this)">
+          <span class="tpl-name">📖 かんたん日記帳</span>
+          <span class="tpl-sub">書いて残す、自分流に育てる</span>
+        </button>
+      </div>
+      <div id="copiedMsg" class="copied-msg">✅ コピーしました！AIに貼り付けて送信してね。</div>
+    </section>
+
+    <section class="card">
+      <div class="step-title">② AIに貼ってコードをもらう</div>
+      <p class="guide">
+        使っているAIにそのまま貼り付けて送信し、返ってきたコードをコピーしてください。
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="step-title">③ ここに貼って動かしてみる</div>
+      <textarea id="codeInput" placeholder="AIが作ったコードをここに貼り付け"></textarea>
+      <div class="actions">
+        <button class="run-btn" onclick="runPreview()">🚀 起動する</button>
+        <button class="clear-btn" onclick="clearAll()">クリア</button>
+      </div>
+      <div id="previewWrap" class="preview-wrap">
+        <iframe id="previewFrame" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast">コピーしました</div>
+
+  <script>
+    const BASE_RULE = `
+※私はプログラミング初心者のため、専門用語は使わず優しく説明してください。
+※HTML・CSS・JavaScriptを1つのHTMLファイルにまとめて出力してください。
+※まずは基本の動く形を作り、そのあと「どこを変えたいですか？」と質問して一緒に仕上げてください。`;
+
+    const PROMPTS = {
+      memo: `スマホで使える「買い物メモ」のWebアプリを作ってください。${BASE_RULE}`,
+      meal: `スマホで使える「食事ルーレット」のWebアプリを作ってください。ランチとディナーを切り替えられて、ボタンを押すと今日のメニューが決まるようにしてください。${BASE_RULE}`,
+      countdown: `スマホで使える「カウントダウン」のWebアプリを作ってください。楽しみな予定の日付を入れると、あと何日かが大きく表示されるようにしてください。${BASE_RULE}`,
+      diary: `スマホで使える「かんたん日記帳」のWebアプリを作ってください。まずは今日の日付と感想を書いて保存し、一覧で見返せるシンプルな形にしてください。${BASE_RULE}`
+    };
+
+    function notify(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    async function pick(key, el) {
+      document.querySelectorAll('.tpl-btn').forEach(b => {
+        b.classList.remove('selected');
+        b.querySelector('.tpl-name').textContent = b.dataset.title;
+        b.querySelector('.tpl-sub').textContent = b.dataset.sub;
+      });
+
+      el.classList.add('selected');
+      el.querySelector('.tpl-name').textContent = 'コピー完了👍';
+      el.querySelector('.tpl-sub').textContent = `${el.dataset.title} をコピーしました`;
+
+      const text = PROMPTS[key];
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (_) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      document.getElementById('copiedMsg').classList.add('show');
+      notify('コピー完了👍');
+    }
+
+    function runPreview() {
+      const raw = document.getElementById('codeInput').value.trim();
+      if (!raw) {
+        notify('コードを貼り付けてね');
+        return;
+      }
+      const clean = raw
+        .replace(/^```html\s*/i, '')
+        .replace(/^```\s*/i, '')
+        .replace(/```\s*$/i, '');
+      document.getElementById('previewFrame').srcdoc = clean;
+      const wrap = document.getElementById('previewWrap');
+      wrap.classList.add('show');
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function clearAll() {
+      document.getElementById('codeInput').value = '';
+      document.getElementById('previewWrap').classList.remove('show');
+    }
+  </script>
+</body>
+</html>
