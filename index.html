@@ -19,6 +19,7 @@
       --bg: #f6f8fb;
       --card: #ffffff;
       --primary: #2563eb;
+      --primary-dark: #1d4ed8;
       --accent: #10b981;
       --accent-dark: #059669;
       --text: #1e293b;
@@ -256,6 +257,41 @@
       border: 2px solid var(--border);
       border-radius: 14px;
       background: #fff;
+      display: block;
+    }
+
+    .save-area {
+      margin-top: 12px;
+    }
+
+    .save-btn {
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--primary-dark);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease;
+    }
+
+    .save-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .save-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 var(--primary-dark);
+    }
+
+    .save-hint {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 6px;
     }
 
     .toast {
@@ -272,6 +308,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease;
+      z-index: 50;
     }
 
     .toast.show {
@@ -325,6 +362,10 @@
       </div>
       <div id="previewWrap" class="preview-wrap">
         <iframe id="previewFrame" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+        <div class="save-area">
+          <button class="save-btn" onclick="saveAppFile()">💾 このアプリをスマホに保存</button>
+          <p class="save-hint">HTMLファイルとして保存され、そのまま開いて使えます</p>
+        </div>
       </div>
     </section>
   </div>
@@ -344,6 +385,16 @@
       diary: `スマホで使える「かんたん日記帳」のWebアプリを作ってください。まずは今日の日付と感想を書いて保存し、一覧で見返せるシンプルな形にしてください。${BASE_RULE}`
     };
 
+    const FILE_NAMES = {
+      memo: 'kaimono-memo.html',
+      meal: 'shokuji-roulette.html',
+      countdown: 'countdown-app.html',
+      diary: 'kantan-nikki.html'
+    };
+
+    let selectedKey = null;
+    let lastRanCode = '';
+
     function notify(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
@@ -351,16 +402,29 @@
       setTimeout(() => t.classList.remove('show'), 2200);
     }
 
-    async function pick(key, el) {
+    function resetTemplates() {
+      selectedKey = null;
       document.querySelectorAll('.tpl-btn').forEach(b => {
         b.classList.remove('selected');
         b.querySelector('.tpl-name').textContent = b.dataset.title;
         b.querySelector('.tpl-sub').textContent = b.dataset.sub;
       });
+      document.getElementById('copiedMsg').classList.remove('show');
+    }
+
+    async function pick(key, el) {
+      if (selectedKey === key) {
+        resetTemplates();
+        notify('選択を解除しました');
+        return;
+      }
+
+      resetTemplates();
+      selectedKey = key;
 
       el.classList.add('selected');
       el.querySelector('.tpl-name').textContent = 'コピー完了👍';
-      el.querySelector('.tpl-sub').textContent = `${el.dataset.title} をコピーしました`;
+      el.querySelector('.tpl-sub').textContent = `${el.dataset.title}（再タップで解除）`;
 
       const text = PROMPTS[key];
       try {
@@ -377,25 +441,54 @@
       notify('コピー完了👍');
     }
 
-    function runPreview() {
+    function getCleanCode() {
       const raw = document.getElementById('codeInput').value.trim();
-      if (!raw) {
-        notify('コードを貼り付けてね');
-        return;
-      }
-      const clean = raw
+      if (!raw) return '';
+      return raw
         .replace(/^```html\s*/i, '')
         .replace(/^```\s*/i, '')
         .replace(/```\s*$/i, '');
+    }
+
+    function runPreview() {
+      const clean = getCleanCode();
+      if (!clean) {
+        notify('コードを貼り付けてね');
+        return;
+      }
+      lastRanCode = clean;
       document.getElementById('previewFrame').srcdoc = clean;
       const wrap = document.getElementById('previewWrap');
       wrap.classList.add('show');
       wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    function saveAppFile() {
+      const code = getCleanCode() || lastRanCode;
+      if (!code) {
+        notify('先にアプリを起動してね');
+        return;
+      }
+      const filename = (selectedKey && FILE_NAMES[selectedKey]) ? FILE_NAMES[selectedKey] : 'my-first-app.html';
+      const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      notify(`「${filename}」を保存しました！`);
+    }
+
     function clearAll() {
       document.getElementById('codeInput').value = '';
+      document.getElementById('previewFrame').srcdoc = '';
       document.getElementById('previewWrap').classList.remove('show');
+      lastRanCode = '';
+      resetTemplates();
+      notify('すべてクリアしました');
     }
   </script>
 </body>
