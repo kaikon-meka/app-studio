@@ -48,7 +48,7 @@
 
     header {
       text-align: center;
-      padding: 16px 8px 22px;
+      padding: 16px 8px 20px;
     }
 
     h1 {
@@ -62,6 +62,40 @@
     .subtitle {
       font-size: 14px;
       color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .story-open-btn {
+      appearance: none;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      padding: 10px 22px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #1d4ed8;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .story-open-btn .btn-top {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .story-open-btn .btn-sub {
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0.92;
+    }
+
+    .story-open-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #1d4ed8;
     }
 
     .card {
@@ -240,6 +274,37 @@
       box-shadow: 0 1px 0 #cbd5e1;
     }
 
+    .safety-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* やさしい案内バナー（外部通信などを検知したとき） */
+    .friendly-notice {
+      display: none;
+      margin-top: 12px;
+      background: #fffbeb;
+      border: 1.5px solid #fcd34d;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12.5px;
+      color: #92400e;
+      line-height: 1.55;
+    }
+
+    .friendly-notice.show {
+      display: block;
+    }
+
+    .friendly-notice strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 2px;
+      color: #b45309;
+    }
+
     .preview-wrap {
       display: none;
       margin-top: 16px;
@@ -288,10 +353,11 @@
     }
 
     .save-hint {
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--muted);
       text-align: center;
       margin-top: 6px;
+      line-height: 1.5;
     }
 
     .toast {
@@ -308,11 +374,191 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease;
-      z-index: 50;
+      z-index: 120;
     }
 
     .toast.show {
       opacity: 1;
+    }
+
+    /* ===== 4コマ漫画モーダル ===== */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.62);
+      z-index: 100;
+      overflow-y: auto;
+      padding: 16px 12px 36px;
+      backdrop-filter: blur(2px);
+    }
+
+    .modal-backdrop.show {
+      display: block;
+    }
+
+    .story-wrapper {
+      max-width: 440px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 18px 14px 22px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      position: relative;
+      animation: popIn 0.2s ease-out;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-close-x {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close-x:active {
+      background: #e2e8f0;
+    }
+
+    .story-header {
+      text-align: center;
+      margin-bottom: 16px;
+      padding-top: 4px;
+    }
+
+    .story-badge {
+      display: inline-block;
+      background: #e8f4fd;
+      color: #1976d2;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 6px;
+    }
+
+    .story-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    .story-sub {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .koma {
+      border: 2.5px solid #334155;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .koma-1 { background: linear-gradient(180deg, #f8fafc 0%, #eef2f6 100%); }
+    .koma-2 { background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%); }
+    .koma-3 { background: linear-gradient(180deg, #fdf4ff 0%, #fae8ff 100%); }
+    .koma-4 { background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%); }
+
+    .koma-num {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #334155;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 3px 10px;
+      border-bottom-right-radius: 10px;
+    }
+
+    .koma-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .koma-2 .koma-content,
+    .koma-4 .koma-content {
+      flex-direction: row-reverse;
+    }
+
+    .bubble {
+      flex: 1;
+      background: #ffffff;
+      border: 2px solid #334155;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      font-weight: bold;
+      position: relative;
+      box-shadow: 0 2px 0 rgba(51, 65, 85, 0.15);
+    }
+
+    .bubble span.accent { color: #e11d48; }
+    .bubble span.blue { color: #0284c7; }
+    .bubble span.purple { color: #9333ea; }
+    .bubble span.green { color: #16a34a; }
+
+    .illust {
+      width: 92px;
+      height: 92px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .koma-caption {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #475569;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 5px 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .story-close-btn {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: #10b981;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #059669;
+      transition: transform 0.1s;
+    }
+
+    .story-close-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #059669;
     }
   </style>
 </head>
@@ -321,6 +567,10 @@
     <header>
       <h1>誰でもアプリ体験スタジオ</h1>
       <p class="subtitle">選んで、AIに貼って、ここで動かすだけ。</p>
+      <button class="story-open-btn" onclick="openStory()">
+        <span class="btn-top">👆 ここをタップ！</span>
+        <span class="btn-sub">はじめてのアプリ作り・4コマ解説</span>
+      </button>
     </header>
 
     <section class="card">
@@ -360,14 +610,125 @@
         <button class="run-btn" onclick="runPreview()">🚀 起動する</button>
         <button class="clear-btn" onclick="clearAll()">クリア</button>
       </div>
+      <p class="safety-note">⚠️ 信頼できるAIから受け取ったコードを使ってください。体験用アプリには個人情報やパスワードを入れないでください。</p>
+
+      <!-- やさしい案内バナー -->
+      <div id="friendlyNotice" class="friendly-notice">
+        <strong>💡 ちょっと待ってね！</strong>
+        コードの中にインターネット通信や外部パーツの読み込みが含まれていたため、安全のためブロックしました。表示が崩れるときは、AIに「外部通信を使わず1ファイルだけで作って」と伝えてみてね！
+      </div>
+
       <div id="previewWrap" class="preview-wrap">
-        <iframe id="previewFrame" sandbox="allow-scripts allow-forms allow-modals"></iframe>
+        <iframe id="previewFrame" sandbox="allow-scripts allow-modals"></iframe>
         <div class="save-area">
           <button class="save-btn" onclick="saveAppFile()">💾 このアプリをスマホに保存</button>
-          <p class="save-hint">HTMLファイルとして保存され、そのまま開いて使えます</p>
+          <p class="save-hint">HTMLファイルとして保存され、そのまま開いて使えます<br>（※体験用アプリのため、ブラウザを閉じると入力データはリセットされる場合があります）</p>
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- 4コマ漫画モーダル -->
+  <div id="storyModal" class="modal-backdrop" onclick="handleBackdropClick(event)">
+    <div class="story-wrapper">
+      <button class="modal-close-x" onclick="closeStory()" aria-label="閉じる">×</button>
+      <div class="story-header">
+        <div class="story-badge">📖 30秒でわかる！</div>
+        <div class="story-title">アプリ作り物語</div>
+        <div class="story-sub">作って終わりじゃない！自分流に育てる体験</div>
+      </div>
+
+      <div class="koma koma-1">
+        <div class="koma-num">1コマ目</div>
+        <div class="koma-content">
+          <div class="illust">
+            <svg viewBox="0 0 100 100" width="88" height="88">
+              <circle cx="50" cy="54" r="34" fill="#fde68a" stroke="#334155" stroke-width="3"/>
+              <path d="M80 28 C84 35, 84 40, 80 42 C76 40, 76 35, 80 28 Z" fill="#38bdf8" stroke="#334155" stroke-width="1.5"/>
+              <line x1="33" y1="43" x2="43" y2="40" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+              <line x1="67" y1="43" x2="57" y2="40" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="39" cy="50" r="3.5" fill="#334155"/>
+              <circle cx="61" cy="50" r="3.5" fill="#334155"/>
+              <path d="M41 68 Q50 61 59 68" fill="none" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+              <rect x="62" y="64" width="22" height="32" rx="4" fill="#cbd5e1" stroke="#334155" stroke-width="2.5"/>
+            </svg>
+          </div>
+          <div class="bubble">
+            市販のアプリって使いづらいなぁ…<br>
+            <span class="accent">自分好みのアプリが作れたらいいのに💦</span>
+          </div>
+        </div>
+        <div class="koma-caption">まずは「こんなの欲しい！」と思うだけでOK</div>
+      </div>
+
+      <div class="koma koma-2">
+        <div class="koma-num">2コマ目</div>
+        <div class="koma-content">
+          <div class="illust">
+            <svg viewBox="0 0 100 100" width="88" height="88">
+              <line x1="50" y1="12" x2="50" y2="24" stroke="#334155" stroke-width="3"/>
+              <circle cx="50" cy="10" r="5" fill="#38bdf8" stroke="#334155" stroke-width="2.5"/>
+              <rect x="20" y="24" width="60" height="52" rx="14" fill="#bae6fd" stroke="#334155" stroke-width="3"/>
+              <rect x="28" y="34" width="44" height="24" rx="8" fill="#1e293b"/>
+              <circle cx="40" cy="46" r="4" fill="#38bdf8"/>
+              <circle cx="60" cy="46" r="4" fill="#38bdf8"/>
+              <path d="M40 66 Q50 72 60 66" fill="none" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="bubble">
+            選んでAIに貼って、戻して起動！<br>
+            あっという間に<span class="blue">「基本の土台」が動いた！</span>
+          </div>
+        </div>
+        <div class="koma-caption">①〜③の手順で、まずはシンプルに動く土台が完成！</div>
+      </div>
+
+      <div class="koma koma-3">
+        <div class="koma-num">3コマ目</div>
+        <div class="koma-content">
+          <div class="illust">
+            <svg viewBox="0 0 100 100" width="88" height="88">
+              <path d="M40 30 A14 14 0 1 1 60 30 C60 36 56 38 56 42 L44 42 C44 38 40 36 40 30 Z" fill="#fde047" stroke="#334155" stroke-width="2.5"/>
+              <rect x="45" y="42" width="10" height="5" rx="2" fill="#94a3b8" stroke="#334155" stroke-width="2"/>
+              <line x1="50" y1="6" x2="50" y2="11" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+              <line x1="28" y1="15" x2="32" y2="19" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+              <line x1="72" y1="15" x2="68" y2="19" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+              <rect x="16" y="54" width="68" height="28" rx="8" fill="#ffffff" stroke="#334155" stroke-width="2.5"/>
+              <text x="50" y="72" font-size="10" font-weight="bold" fill="#9333ea" text-anchor="middle">🎨 色と絵文字足して！</text>
+            </svg>
+          </div>
+          <div class="bubble">
+            ここからが本番！AIに<span class="purple">「ピンク色にして！」「気分スタンプも付けて！」</span>と注文すると…？
+          </div>
+        </div>
+        <div class="koma-caption">専門用語ゼロ！普通の言葉でAIに改造をおねがい！</div>
+      </div>
+
+      <div class="koma koma-4">
+        <div class="koma-num">4コマ目</div>
+        <div class="koma-content">
+          <div class="illust">
+            <svg viewBox="0 0 100 100" width="88" height="88">
+              <circle cx="50" cy="54" r="34" fill="#fde68a" stroke="#334155" stroke-width="3"/>
+              <polygon points="18,22 21,28 27,30 21,32 18,38 15,32 9,30 15,28" fill="#facc15" stroke="#334155" stroke-width="1.5"/>
+              <polygon points="82,18 84,23 89,25 84,27 82,32 80,27 75,25 80,23" fill="#facc15" stroke="#334155" stroke-width="1.5"/>
+              <path d="M33 49 Q39 41 45 49" fill="none" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+              <path d="M55 49 Q61 41 67 49" fill="none" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="31" cy="57" r="4" fill="#fda4af"/>
+              <circle cx="69" cy="57" r="4" fill="#fda4af"/>
+              <path d="M38 61 Q50 75 62 61 Z" fill="#fb7185" stroke="#334155" stroke-width="2.5"/>
+            </svg>
+          </div>
+          <div class="bubble">
+            言った通りに進化した〜！！🎉<br>
+            <span class="green">世界に1つだけの「自分専用アプリ」完成！</span>
+          </div>
+        </div>
+        <div class="koma-caption">気に入ったらスマホに保存してずっと使える！</div>
+      </div>
+
+      <button class="story-close-btn" onclick="closeStory()">✨ 自分だけのアプリを育ててみる！</button>
+    </div>
   </div>
 
   <div id="toast" class="toast">コピーしました</div>
@@ -376,6 +737,7 @@
     const BASE_RULE = `
 ※私はプログラミング初心者のため、専門用語は使わず優しく説明してください。
 ※HTML・CSS・JavaScriptを1つのHTMLファイルにまとめて出力してください。
+※外部通信や外部ファイル・外部フォントは使わず、1ファイルだけで完結させてください。
 ※まずは基本の動く形を作り、そのあと「どこを変えたいですか？」と質問して一緒に仕上げてください。`;
 
     const PROMPTS = {
@@ -392,8 +754,27 @@
       diary: 'kantan-nikki.html'
     };
 
+    const MAX_CODE_BYTES = 500 * 1024;
+    const STRICT_CSP = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';";
+
     let selectedKey = null;
     let lastRanCode = '';
+
+    function openStory() {
+      const modal = document.getElementById('storyModal');
+      modal.scrollTop = 0;
+      modal.classList.add('show');
+    }
+
+    function closeStory() {
+      document.getElementById('storyModal').classList.remove('show');
+    }
+
+    function handleBackdropClick(e) {
+      if (e.target.id === 'storyModal') {
+        closeStory();
+      }
+    }
 
     function notify(msg) {
       const t = document.getElementById('toast');
@@ -450,14 +831,50 @@
         .replace(/```\s*$/i, '');
     }
 
+    function checkSizeOk(code) {
+      const bytes = new TextEncoder().encode(code).length;
+      if (bytes > MAX_CODE_BYTES) {
+        notify('コードが大きすぎます（500KBまで）');
+        return false;
+      }
+      return true;
+    }
+
+    function hasExternalNetwork(code) {
+      // SVGのxmlns等は除外し、実際の外部通信や外部リソース読み込みを検知
+      const stripped = code.replace(/https?:\/\/www\.w3\.org\/[0-9a-zA-Z\/._-]+/gi, '');
+      return /(https?:\/\/|fetch\s*\(|XMLHttpRequest|new\s+WebSocket|navigator\.sendBeacon)/i.test(stripped);
+    }
+
+    function buildSandboxedHtml(code) {
+      const cspTag = `<meta http-equiv="Content-Security-Policy" content="${STRICT_CSP}">`;
+      if (/<head[^>]*>/i.test(code)) {
+        return code.replace(/<head([^>]*)>/i, `<head$1>\n  ${cspTag}`);
+      }
+      if (/<html[^>]*>/i.test(code)) {
+        return code.replace(/<html([^>]*)>/i, `<html$1>\n<head>\n  ${cspTag}\n</head>`);
+      }
+      return `<!DOCTYPE html>\n<html lang="ja">\n<head>\n  <meta charset="UTF-8">\n  ${cspTag}\n</head>\n<body>\n${code}\n</body>\n</html>`;
+    }
+
     function runPreview() {
       const clean = getCleanCode();
       if (!clean) {
         notify('コードを貼り付けてね');
         return;
       }
+      if (!checkSizeOk(clean)) return;
+
+      const notice = document.getElementById('friendlyNotice');
+      if (hasExternalNetwork(clean)) {
+        notice.classList.add('show');
+      } else {
+        notice.classList.remove('show');
+      }
+
       lastRanCode = clean;
-      document.getElementById('previewFrame').srcdoc = clean;
+      const safeHtml = buildSandboxedHtml(clean);
+      document.getElementById('previewFrame').srcdoc = safeHtml;
       const wrap = document.getElementById('previewWrap');
       wrap.classList.add('show');
       wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -469,8 +886,11 @@
         notify('先にアプリを起動してね');
         return;
       }
+      if (!checkSizeOk(code)) return;
+
+      const safeHtml = buildSandboxedHtml(code);
       const filename = (selectedKey && FILE_NAMES[selectedKey]) ? FILE_NAMES[selectedKey] : 'my-first-app.html';
-      const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+      const blob = new Blob([safeHtml], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -486,6 +906,7 @@
       document.getElementById('codeInput').value = '';
       document.getElementById('previewFrame').srcdoc = '';
       document.getElementById('previewWrap').classList.remove('show');
+      document.getElementById('friendlyNotice').classList.remove('show');
       lastRanCode = '';
       resetTemplates();
       notify('すべてクリアしました');
@@ -493,3 +914,4 @@
   </script>
 </body>
 </html>
+
